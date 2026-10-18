@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,19 +31,23 @@ import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.learncompose.drawingpractice.R
 import com.learncompose.drawingpractice.ui.theme.DrawingPracticeTheme
 
 @Composable
 fun LoginScreen() {
+    // SpanStyle không phải @Composable, nên đọc theme trước khi build annotated string.
+    val linkStyle = SpanStyle(
+        color = MaterialTheme.colorScheme.primary,
+        fontWeight = MaterialTheme.typography.titleSmall.fontWeight
+    )
+
     Box(
         modifier = Modifier.fillMaxSize()
 
@@ -69,7 +73,10 @@ fun LoginScreen() {
                         .clickable(onClick = {}),
                     color = Color.Transparent,
                     shape = RoundedCornerShape(size = 100.dp),
-                    border = BorderStroke(width = 1.dp, color = Color.White)
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                 ) {
                     Row(
                         modifier = Modifier.padding(
@@ -88,11 +95,9 @@ fun LoginScreen() {
                         )
                         Spacer(Modifier.width(8.dp))
                         Text(
-                            modifier = Modifier,
                             text = "VI",
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            style = MaterialTheme.typography.labelLarge
                         )
                     }
                 }
@@ -119,7 +124,7 @@ fun LoginScreen() {
                     bottomStart = 0.dp,
                     bottomEnd = 0.dp
                 ),
-                color = Color.White
+                color = MaterialTheme.colorScheme.surface
             ) {
                 Column(
                     modifier = Modifier
@@ -162,20 +167,16 @@ fun LoginScreen() {
                             .padding(4.dp),
                         textAlign = TextAlign.Center,
                         text = "Forgot password",
-                        fontSize = 14.sp,
-                        color = Color(0xFF2D74E7),
-                        fontWeight = FontWeight.SemiBold
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelLarge
                     )
                     Spacer(modifier = Modifier.height(30.dp))
                     Button(
                         onClick = {},
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(30.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF2D74E7)
-                        )
+                        shape = RoundedCornerShape(30.dp)
                     ) {
-                        Text(text = "Login", color = Color.White)
+                        Text(text = "Login")
                     }
                     Spacer(modifier = Modifier.height(10.dp))
                     Row(
@@ -184,18 +185,16 @@ fun LoginScreen() {
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            modifier = Modifier,
                             text = "Do not have an account?",
-                            fontSize = 16.sp,
-                            color = Color(0xFF8B9CB2)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             modifier = Modifier.clickable(onClick = {}),
                             text = "Register",
-                            fontSize = 16.sp,
-                            color = Color(0xFF2D74E7),
-                            fontWeight = FontWeight.Bold
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleSmall
                         )
                     }
                     Spacer(modifier = Modifier.height(5.dp))
@@ -205,18 +204,16 @@ fun LoginScreen() {
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            modifier = Modifier,
                             text = "Need help setting up?",
-                            fontSize = 16.sp,
-                            color = Color(0xFF8B9CB2)
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             modifier = Modifier.clickable(onClick = {}),
                             text = "See manual",
-                            fontSize = 16.sp,
-                            color = Color(0xFF2D74E7),
-                            fontWeight = FontWeight.Bold
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleSmall
                         )
                     }
                 }
@@ -232,39 +229,29 @@ fun LoginScreen() {
                 ),
             textAlign = TextAlign.Center,
             text = buildAnnotatedString {
-                append("Bằng việc tiếp tục, bạn đồng ý với ONE Home về ")
+                append("By signing in, you will agree to our ")
                 withLink(
                     LinkAnnotation.Url(
                         url = "https://sanphamvnpt.vn/one-home-dieu-khoan-su-dung-n777",
-                        styles = TextLinkStyles(
-                            style = SpanStyle(
-                                color = Color(0xFF2D74E7),
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
+                        styles = TextLinkStyles(style = linkStyle)
                     ),
                     block = {
-                        append("Điều khoản sử dụng")
+                        append("Term of Use")
                     }
                 )
-                append(" và ")
+                append(" and ")
                 withLink(
                     LinkAnnotation.Url(
                         url = "",
-                        styles = TextLinkStyles(
-                            style = SpanStyle(
-                                color = Color(0xFF2D74E7),
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
+                        styles = TextLinkStyles(style = linkStyle)
                     ),
                     block = {
-                        append("Chính sách bảo mật")
+                        append("Privacy Policy")
                     }
                 )
             },
-            color = Color(0xFF262F3B),
-            fontSize = 14.sp
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
