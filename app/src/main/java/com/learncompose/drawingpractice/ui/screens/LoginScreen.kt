@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
@@ -36,8 +37,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.learncompose.drawingpractice.R
+import com.learncompose.drawingpractice.ui.theme.Dimens
 import com.learncompose.drawingpractice.ui.theme.DrawingPracticeTheme
 
 @Composable
@@ -47,6 +48,12 @@ fun LoginScreen() {
         color = MaterialTheme.colorScheme.primary,
         fontWeight = MaterialTheme.typography.titleSmall.fontWeight
     )
+    val termsPrefix = stringResource(R.string.login_terms_prefix)
+    val termsOfUse = stringResource(R.string.login_terms_of_use)
+    val termsAnd = stringResource(R.string.login_terms_and)
+    val privacyPolicy = stringResource(R.string.login_privacy_policy)
+    val termsOfUseUrl = stringResource(R.string.url_terms_of_use)
+    val privacyPolicyUrl = stringResource(R.string.url_privacy_policy)
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -69,33 +76,33 @@ fun LoginScreen() {
                 horizontalArrangement = Arrangement.End
             ) {
                 Surface(
-                    modifier = Modifier.padding(top = 12.dp, end = 10.dp)
+                    modifier = Modifier.padding(top = Dimens.SpaceL, end = Dimens.SpaceM)
                         .clickable(onClick = {}),
                     color = Color.Transparent,
-                    shape = RoundedCornerShape(size = 100.dp),
+                    shape = RoundedCornerShape(size = Dimens.CornerPill),
                     border = BorderStroke(
-                        width = 1.dp,
+                        width = Dimens.BorderThin,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
                     Row(
                         modifier = Modifier.padding(
-                            top = 4.dp,
-                            end = 12.dp,
-                            bottom = 4.dp,
-                            start = 8.dp
+                            top = Dimens.SpaceXxs,
+                            end = Dimens.SpaceL,
+                            bottom = Dimens.SpaceXxs,
+                            start = Dimens.SpaceS
                         ),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
-                            modifier = Modifier.size(20.dp),
+                            modifier = Modifier.size(Dimens.IconSmall),
                             painter = painterResource(R.drawable.ic_language_vn),
                             contentDescription = "",
                         )
-                        Spacer(Modifier.width(8.dp))
+                        Spacer(Modifier.width(Dimens.SpaceS))
                         Text(
-                            text = "VI",
+                            text = stringResource(R.string.language_code_vi),
                             color = MaterialTheme.colorScheme.onPrimary,
                             style = MaterialTheme.typography.labelLarge
                         )
@@ -106,11 +113,11 @@ fun LoginScreen() {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(30.dp),
+                    .padding(Dimens.SpaceXxxl),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    modifier = Modifier.size(140.dp),
+                    modifier = Modifier.size(Dimens.AppLogo),
                     painter = painterResource(R.drawable.ic_app),
                     contentDescription = ""
                 )
@@ -119,17 +126,15 @@ fun LoginScreen() {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 shape = RoundedCornerShape(
-                    topStart = 36.dp,
-                    topEnd = 36.dp,
-                    bottomStart = 0.dp,
-                    bottomEnd = 0.dp
+                    topStart = Dimens.CornerSheet,
+                    topEnd = Dimens.CornerSheet
                 ),
                 color = MaterialTheme.colorScheme.surface
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 30.dp),
+                        .padding(horizontal = Dimens.SpaceXxxl),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     OutlinedTextField(
@@ -137,81 +142,81 @@ fun LoginScreen() {
                         onValueChange = {},
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 30.dp),
+                            .padding(top = Dimens.SpaceXxxl),
                         placeholder = {
-                            Text(text = "Account")
+                            Text(text = stringResource(R.string.login_account_hint))
                         },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Phone,
                             imeAction = ImeAction.Next
                         ),
-                        shape = RoundedCornerShape(28.dp)
+                        shape = RoundedCornerShape(Dimens.CornerTextField)
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(Dimens.SpaceXl))
                     OutlinedTextField(
                         value = "",
                         onValueChange = {},
                         modifier = Modifier
                             .fillMaxWidth(),
-                        placeholder = { Text(text = "Password") },
+                        placeholder = { Text(text = stringResource(R.string.login_password_hint)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password,
                             imeAction = ImeAction.Done
                         ),
-                        shape = RoundedCornerShape(28.dp)
+                        shape = RoundedCornerShape(Dimens.CornerTextField)
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(Dimens.SpaceXl))
                     Text(
                         modifier = Modifier
                             .clickable(onClick = {})
-                            .padding(4.dp),
+                            .padding(Dimens.SpaceXxs),
                         textAlign = TextAlign.Center,
-                        text = "Forgot password",
+                        text = stringResource(R.string.login_forgot_password),
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.labelLarge
                     )
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(Dimens.SpaceXxxl))
                     Button(
                         onClick = {},
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(30.dp)
+                        shape = RoundedCornerShape(Dimens.CornerButton)
                     ) {
-                        Text(text = "Login")
+                        Text(text = stringResource(R.string.login_button))
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(Dimens.SpaceM))
                     Row(
                         modifier = Modifier.fillMaxWidth()
-                            .padding(4.dp),
+                            .padding(Dimens.SpaceXxs),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "Do not have an account?",
+                            text = stringResource(R.string.login_no_account),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodyLarge
                         )
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(Dimens.SpaceXxs))
                         Text(
                             modifier = Modifier.clickable(onClick = {}),
-                            text = "Register",
+                            text = stringResource(R.string.login_register),
                             color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.titleSmall
                         )
                     }
-                    Spacer(modifier = Modifier.height(5.dp))
+                    Spacer(modifier = Modifier.height(Dimens.SpaceXs))
                     Row(
                         modifier = Modifier.fillMaxWidth()
-                            .padding(vertical = 4.dp),
+                            .padding(vertical = Dimens.SpaceXxs),
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "Need help setting up?",
+                            text = stringResource(R.string.login_need_help),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodyLarge
                         )
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(Dimens.SpaceXxs))
                         Text(
                             modifier = Modifier.clickable(onClick = {}),
-                            text = "See manual",
+                            text = stringResource(R.string.login_see_manual),
                             color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.titleSmall
                         )
@@ -223,30 +228,30 @@ fun LoginScreen() {
         Text(
             modifier = Modifier.align(Alignment.BottomCenter)
                 .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = 30.dp
+                    start = Dimens.SpaceXl,
+                    end = Dimens.SpaceXl,
+                    bottom = Dimens.SpaceXxxl
                 ),
             textAlign = TextAlign.Center,
             text = buildAnnotatedString {
-                append("By signing in, you will agree to our ")
+                append(termsPrefix)
                 withLink(
                     LinkAnnotation.Url(
-                        url = "https://sanphamvnpt.vn/one-home-dieu-khoan-su-dung-n777",
+                        url = termsOfUseUrl,
                         styles = TextLinkStyles(style = linkStyle)
                     ),
                     block = {
-                        append("Term of Use")
+                        append(termsOfUse)
                     }
                 )
-                append(" and ")
+                append(termsAnd)
                 withLink(
                     LinkAnnotation.Url(
-                        url = "",
+                        url = privacyPolicyUrl,
                         styles = TextLinkStyles(style = linkStyle)
                     ),
                     block = {
-                        append("Privacy Policy")
+                        append(privacyPolicy)
                     }
                 )
             },

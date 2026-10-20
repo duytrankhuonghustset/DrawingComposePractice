@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,21 +14,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -41,12 +38,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.learncompose.drawingpractice.R
+import com.learncompose.drawingpractice.ui.theme.Dimens
 import com.learncompose.drawingpractice.ui.theme.DrawingPracticeTheme
+import com.learncompose.drawingpractice.ui.theme.extendedColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,12 +52,12 @@ fun ProfileScreen() {
         modifier = Modifier
             .statusBarsPadding()
             .fillMaxSize()
-            .background(Color(0xFFF8F8F8))
+            .background(MaterialTheme.extendedColors.screenBackground)
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFFBDE6FF),
-                        Color(0x00F9FAFB)
+                        MaterialTheme.extendedColors.headerGradientStart,
+                        MaterialTheme.extendedColors.headerGradientEnd
                     )
                 )
             )
@@ -71,10 +68,9 @@ fun ProfileScreen() {
                 CenterAlignedTopAppBar(
                     title = {
                         Text(
-                            text = "Account Info",
-                            color = Color(0xFF262F3B),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
+                            text = stringResource(R.string.profile_title),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.titleMedium
                         )
                     },
                     navigationIcon = {
@@ -86,7 +82,7 @@ fun ProfileScreen() {
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_back_pair_screen),
-                                contentDescription = "Back"
+                                contentDescription = stringResource(R.string.cd_back)
                             )
                         }
                     },
@@ -101,17 +97,17 @@ fun ProfileScreen() {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = Dimens.SpaceXl)
             ) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(Dimens.CornerCard),
                     elevation = CardDefaults.cardElevation(
-                        defaultElevation = 4.dp
+                        defaultElevation = Dimens.ElevationCard
                     ),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.surface
                     )
                 ) {
                     Column(
@@ -120,47 +116,47 @@ fun ProfileScreen() {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 16.dp, end = 16.dp),
+                                .padding(top = Dimens.SpaceXl, end = Dimens.SpaceXl),
                             horizontalArrangement = Arrangement.End
                         ) {
                             Image(
                                 painter = painterResource(R.drawable.ic_edit),
-                                contentDescription = "Edit",
+                                contentDescription = stringResource(R.string.cd_edit),
                                 modifier = Modifier
-                                    .size(40.dp)
+                                    .size(Dimens.IconButtonSize)
                                     .clickable(onClick = {})
-                                    .padding(10.dp)
+                                    .padding(Dimens.SpaceM)
                             )
                         }
 
                         Box(
                             modifier = Modifier
-                                .size(105.dp)
+                                .size(Dimens.Avatar)
                                 .align(Alignment.CenterHorizontally),
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
                                 painter = painterResource(R.drawable.ic_user_bg),
-                                contentDescription = "User",
+                                contentDescription = stringResource(R.string.cd_user),
                                 modifier = Modifier.fillMaxSize()
                             )
 
                             Image(
                                 painter = painterResource(R.drawable.bg_oval),
-                                contentDescription = "User",
+                                contentDescription = stringResource(R.string.cd_user),
                                 modifier = Modifier
-                                    .size(35.dp)
+                                    .size(Dimens.AvatarBadge)
                                     .align(Alignment.BottomEnd)
                             )
 
                             Image(
                                 painter = painterResource(R.drawable.ic_camera),
-                                contentDescription = "Camera",
+                                contentDescription = stringResource(R.string.cd_camera),
                                 modifier = Modifier
-                                    .size(35.dp)
+                                    .size(Dimens.AvatarBadge)
                                     .clip(CircleShape)
                                     .clickable(onClick = {})
-                                    .padding(8.dp)
+                                    .padding(Dimens.SpaceS)
                                     .align(Alignment.BottomEnd)
                             )
                         }
@@ -168,17 +164,22 @@ fun ProfileScreen() {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 16.dp, top = 30.dp, end = 16.dp, bottom = 20.dp)
+                                .padding(
+                                    start = Dimens.SpaceXl,
+                                    top = Dimens.SpaceXxxl,
+                                    end = Dimens.SpaceXl,
+                                    bottom = Dimens.SpaceXxl
+                                )
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Tên:",
-                                    fontSize = 16.sp,
+                                    text = stringResource(R.string.profile_label_name),
+                                    style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.weight(0.45f),
-                                    color = Color(0xFF748792)
+                                    color = MaterialTheme.extendedColors.textLabel
                                 )
                                 TextField(
                                     value = "Phạm Thị Ngà",
@@ -197,10 +198,10 @@ fun ProfileScreen() {
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Ngày sinh:",
-                                    fontSize = 16.sp,
+                                    text = stringResource(R.string.profile_label_birthday),
+                                    style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.weight(0.45f),
-                                    color = Color(0xFF748792)
+                                    color = MaterialTheme.extendedColors.textLabel
                                 )
                                 TextField(
                                     value = "",
@@ -219,10 +220,10 @@ fun ProfileScreen() {
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Email:",
-                                    fontSize = 16.sp,
+                                    text = stringResource(R.string.profile_label_email),
+                                    style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.weight(0.45f),
-                                    color = Color(0xFF748792)
+                                    color = MaterialTheme.extendedColors.textLabel
                                 )
                                 TextField(
                                     value = "",
@@ -241,10 +242,10 @@ fun ProfileScreen() {
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Số điện thoại:",
-                                    fontSize = 16.sp,
+                                    text = stringResource(R.string.profile_label_phone),
+                                    style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.weight(0.45f),
-                                    color = Color(0xFF748792)
+                                    color = MaterialTheme.extendedColors.textLabel
                                 )
                                 TextField(
                                     value = "",
@@ -261,15 +262,15 @@ fun ProfileScreen() {
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimens.SpaceXl))
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(Dimens.CornerCard),
                     elevation = CardDefaults.cardElevation(
-                        4.dp
+                        Dimens.ElevationCard
                     ),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.surface
                     )
                 ) {
                     Column(
@@ -277,21 +278,21 @@ fun ProfileScreen() {
                     ) {
                         Row(
                             Modifier.fillMaxWidth()
-                                .padding(16.dp),
+                                .padding(Dimens.SpaceXl),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Change password",
-                                fontSize = 16.sp,
+                                text = stringResource(R.string.profile_change_password),
+                                style = MaterialTheme.typography.bodyLarge,
                             )
 
                             Image(
                                 painter = painterResource(R.drawable.ic_arrow_right),
                                 contentDescription = "",
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(Dimens.IconMedium)
                                     .clickable(onClick = {})
-                                    .padding(4.dp)
+                                    .padding(Dimens.SpaceXxs)
                             )
                         }
                         HorizontalDivider(
@@ -299,32 +300,32 @@ fun ProfileScreen() {
                         )
                         Row(
                             Modifier.fillMaxWidth()
-                                .padding(16.dp),
+                                .padding(Dimens.SpaceXl),
                         ) {
                             Text(
-                                text = "Logout",
-                                fontSize = 16.sp,
+                                text = stringResource(R.string.profile_logout),
+                                style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimens.SpaceXl))
                 ElevatedCard(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(Dimens.CornerCard),
                     elevation = CardDefaults.elevatedCardElevation(
-                        4.dp
+                        Dimens.ElevationCard
                     ),
                     colors = CardDefaults.cardColors(
-                        containerColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.surface
                     )
                 ) {
                     Text(
-                        text = "Delete account",
-                        fontSize = 16.sp,
-                        color = Color(0xFFFF4C4C),
-                        modifier = Modifier.padding(16.dp)
+                        text = stringResource(R.string.profile_delete_account),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(Dimens.SpaceXl)
                     )
                 }
             }

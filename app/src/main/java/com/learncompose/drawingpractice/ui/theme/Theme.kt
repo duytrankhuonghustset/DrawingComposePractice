@@ -8,7 +8,42 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+
+// Màu không có slot tương ứng trong Material colorScheme.
+@Immutable
+data class ExtendedColors(
+    val screenBackground: Color,
+    val headerGradientStart: Color,
+    val headerGradientEnd: Color,
+    val textLabel: Color,
+)
+
+private val LightExtendedColors = ExtendedColors(
+    screenBackground = ScreenBackgroundLight,
+    headerGradientStart = HeaderGradientStartLight,
+    headerGradientEnd = HeaderGradientEndLight,
+    textLabel = TextLabel,
+)
+
+private val DarkExtendedColors = ExtendedColors(
+    screenBackground = ScreenBackgroundDark,
+    headerGradientStart = HeaderGradientStartDark,
+    headerGradientEnd = HeaderGradientEndDark,
+    textLabel = TextLabelDark,
+)
+
+val LocalExtendedColors = staticCompositionLocalOf { LightExtendedColors }
+
+val MaterialTheme.extendedColors: ExtendedColors
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalExtendedColors.current
 
 private val DarkColorScheme = darkColorScheme(
     primary = BrandBlueLight,
@@ -18,6 +53,7 @@ private val DarkColorScheme = darkColorScheme(
     onSurfaceVariant = TextSecondaryDark,
     background = SurfaceDark,
     onBackground = TextPrimaryDark,
+    error = DangerRedDark,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -28,6 +64,7 @@ private val LightColorScheme = lightColorScheme(
     onSurfaceVariant = TextSecondary,
     background = SurfaceLight,
     onBackground = TextPrimary,
+    error = DangerRed,
 )
 
 @Composable
@@ -47,9 +84,13 @@ fun DrawingPracticeTheme(
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    val extendedColors = if (darkTheme) DarkExtendedColors else LightExtendedColors
+
+    CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }
