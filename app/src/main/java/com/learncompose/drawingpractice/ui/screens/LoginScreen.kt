@@ -27,10 +27,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,6 +55,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.learncompose.drawingpractice.R
 import com.learncompose.drawingpractice.ui.theme.Dimens
 import com.learncompose.drawingpractice.ui.theme.DrawingPracticeTheme
+import com.learncompose.drawingpractice.viewmodel.LoginUiState
+import com.learncompose.drawingpractice.viewmodel.LoginViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.learncompose.drawingpractice.viewmodel.LoginUiEvent
 
 @Composable
 fun LoginScreen() {
@@ -93,7 +102,8 @@ private fun LoginHeader(modifier: Modifier = Modifier) {
         ) {
             Surface(
                 // padding trước, clip theo shape rồi mới clickable: vùng bấm/ripple khớp đúng viên thuốc.
-                modifier = Modifier.padding(top = Dimens.SpaceL, end = Dimens.SpaceM)
+                modifier = Modifier
+                    .padding(top = Dimens.SpaceL, end = Dimens.SpaceM)
                     .clip(languageShape)
                     .clickable(onClick = {}),
                 color = Color.Transparent,
@@ -144,7 +154,12 @@ private fun LoginHeader(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun LoginContent(modifier: Modifier = Modifier) {
+private fun LoginContent(
+    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(
@@ -174,7 +189,11 @@ private fun LoginContent(modifier: Modifier = Modifier) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    LoginForm(modifier = Modifier.fillMaxWidth())
+                    LoginForm(
+                        modifier = Modifier.fillMaxWidth(),
+                        uiState = uiState,
+                        onEvent = viewModel::onEvent
+                    )
                     Spacer(modifier = Modifier.height(Dimens.SpaceM))
                     LoginLinkRow(
                         text = stringResource(R.string.login_no_account),
@@ -200,14 +219,20 @@ private fun LoginContent(modifier: Modifier = Modifier) {
 
 // Nhập liệu đăng nhập: tài khoản, mật khẩu, quên mật khẩu, nút Login.
 @Composable
-private fun LoginForm(modifier: Modifier = Modifier) {
+private fun LoginForm(
+    modifier: Modifier = Modifier,
+    uiState: LoginUiState,
+    onEvent: (LoginUiEvent) -> Unit,
+) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = uiState.account,
+            onValueChange = {
+                onEvent.invoke(LoginUiEvent.ChangeAccount(it))
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = Dimens.SpaceXxxl),
@@ -219,12 +244,21 @@ private fun LoginForm(modifier: Modifier = Modifier) {
                 keyboardType = KeyboardType.Phone,
                 imeAction = ImeAction.Next
             ),
-            shape = RoundedCornerShape(Dimens.CornerTextField)
+            shape = RoundedCornerShape(Dimens.CornerTextField),
+            supportingText =
+                if (uiState.isAccountEmpty == true) {
+                    {
+                        Text(text = "Account is invalid")
+                    }
+                } else null,
+            isError = true
         )
         Spacer(modifier = Modifier.height(Dimens.SpaceXl))
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = uiState.password,
+            onValueChange = {
+                onEvent.invoke(LoginUiEvent.ChangePassword(it))
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             placeholder = { Text(text = stringResource(R.string.login_password_hint)) },
@@ -247,7 +281,9 @@ private fun LoginForm(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(Dimens.SpaceXxxl))
         Button(
-            onClick = {},
+            onClick = {
+                onEvent.invoke(LoginUiEvent.ClickLogin)
+            },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(Dimens.CornerButton)
         ) {
