@@ -27,12 +27,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,6 +40,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
@@ -52,17 +54,56 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.learncompose.drawingpractice.R
 import com.learncompose.drawingpractice.ui.theme.Dimens
 import com.learncompose.drawingpractice.ui.theme.DrawingPracticeTheme
+import com.learncompose.drawingpractice.viewmodel.LoginUiEffect
+import com.learncompose.drawingpractice.viewmodel.LoginUiEvent
 import com.learncompose.drawingpractice.viewmodel.LoginUiState
 import com.learncompose.drawingpractice.viewmodel.LoginViewModel
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.learncompose.drawingpractice.viewmodel.LoginUiEvent
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    viewModel: LoginViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackBarHostState = remember { SnackbarHostState() }
+    val context = LocalResources.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(
+        context, lifecycleOwner
+    ) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.effect.collect { effect ->
+                when (effect) {
+                    is LoginUiEffect.ShowSnackBar -> {
+                        snackBarHostState.showSnackbar(context.getString(effect.messageRes))
+                    }
+
+                    LoginUiEffect.NavigateToHome -> {}
+                }
+            }
+        }
+    }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        SnackbarHost(
+            hostState = snackBarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter)
+                .imePadding()
+                .navigationBarsPadding()
+        )
+    }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -82,7 +123,9 @@ fun LoginScreen() {
             LoginContent(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(1f),
+                uiState = uiState,
+                onEvent = viewModel::onEvent
             )
         }
     }
@@ -156,10 +199,9 @@ private fun LoginHeader(modifier: Modifier = Modifier) {
 @Composable
 private fun LoginContent(
     modifier: Modifier = Modifier,
-    viewModel: LoginViewModel = hiltViewModel()
+    uiState: LoginUiState,
+    onEvent: (LoginUiEvent) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(
@@ -192,7 +234,7 @@ private fun LoginContent(
                     LoginForm(
                         modifier = Modifier.fillMaxWidth(),
                         uiState = uiState,
-                        onEvent = viewModel::onEvent
+                        onEvent = onEvent
                     )
                     Spacer(modifier = Modifier.height(Dimens.SpaceM))
                     LoginLinkRow(
@@ -246,12 +288,12 @@ private fun LoginForm(
             ),
             shape = RoundedCornerShape(Dimens.CornerTextField),
             supportingText =
-                if (uiState.isAccountEmpty == true) {
+                if (uiState.isAccountError) {
                     {
-                        Text(text = "Account is invalid")
+                        Text(text = stringResource(R.string.login_account_invalid))
                     }
                 } else null,
-            isError = true
+            isError = uiState.isAccountError
         )
         Spacer(modifier = Modifier.height(Dimens.SpaceXl))
         OutlinedTextField(
@@ -285,7 +327,8 @@ private fun LoginForm(
                 onEvent.invoke(LoginUiEvent.ClickLogin)
             },
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(Dimens.CornerButton)
+            shape = RoundedCornerShape(Dimens.CornerButton),
+            enabled = uiState.account.isNotBlank() && uiState.password.isNotBlank()
         ) {
             Text(text = stringResource(R.string.login_button))
         }

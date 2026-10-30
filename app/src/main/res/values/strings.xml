@@ -15,6 +15,9 @@
     <string name="login_terms_of_use">Term of Use</string>
     <string name="login_terms_and">" and "</string>
     <string name="login_privacy_policy">Privacy Policy</string>
+    <string name="login_account_invalid">Account is invalid</string>
+    <string name="login_password_invalid">The password has to contain at least 8 characters including letters and numbers</string>
+    <string name="login_failed">Login failed</string>
     <string name="url_terms_of_use" translatable="false">https://sanphamvnpt.vn/one-home-dieu-khoan-su-dung-n777</string>
     <string name="url_privacy_policy" translatable="false">https://sanphamvnpt.vn/one-home-dieu-khoan-su-dung-n777</string>
 
